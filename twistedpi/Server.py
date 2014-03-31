@@ -207,7 +207,7 @@ class CameraProtocol(JSONCommandProtocol):
 
 
 class ImageServerFactory(Factory):
-    def __init__(self):
+    def __init__(self, _config):
         log.msg('Creating Protocol Factory', logLevel=logging.DEBUG)
 
     def doStart(self):
@@ -235,17 +235,17 @@ class ImageServerFactory(Factory):
         log.msg('Stopping Protocol Factory', logLevel=logging.DEBUG)
 
 
-observer = log.PythonLoggingObserver()
-observer.start()
+#observer = log.PythonLoggingObserver()
+#observer.start()
 
-ch = logging.StreamHandler(sys.stdout)
-ch.setLevel(logging.DEBUG)
+#ch = logging.StreamHandler(sys.stdout)
+#ch.setLevel(logging.DEBUG)
 
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
+#formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+#ch.setFormatter(formatter)
 
-logging.getLogger().addHandler(ch)
-logging.getLogger().setLevel(logging.DEBUG)
+#logging.getLogger().addHandler(ch)
+#logging.getLogger().setLevel(logging.DEBUG)
 
-reactor.listenTCP(8081, ImageServerFactory())
-reactor.run()
+#reactor.listenTCP(8081, ImageServerFactory())
+#reactor.run()

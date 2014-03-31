@@ -49,6 +49,41 @@ def TakeImage(_args):
                 if 'resolution' in _args:
                     camera.resolution = (_args['resolution'][0],
                                          _args['resolution'][1])
+                if 'ISO' in _args:
+                    camera.ISO = _args['ISO']
+                if 'awb_mode' in _args:
+                    camera.awb_mode = _args['awb_mode']
+                if 'brightness' in _args:
+                    camera.brightness = _args['brightness']
+                if 'color_effects' in _args:
+                    camera.color_effects = _args['color_effects']
+                if 'contrast' in _args:
+                    camera.contrast = _args['contrast']
+                if 'crop' in _args:
+                    camera.crop = _args['crop']
+                if 'exif_tags' in _args:
+                    for k, v in _args[exif_tags]:
+                        camera.exif_tags[k] = v
+                if 'exposure_compensation' in _args:
+                    camera.exposure_compensation = _args['exposure_compensation']
+                if 'exposure_mode' in _args:
+                    camera.exposure_mode = _args[exposure_mode]
+                if 'hflip' in _args:
+                    camera.hflip = _args['hflip']
+                if 'led' in _args:
+                    camera.led = _args['led']
+                if 'meter_mode' in _args:
+                    camera.meter_mode = _args['meter_mode']
+                if 'rotation' in _args:
+                    camera.rotation = _args['rotation']
+                if 'saturation' in _args:
+                    camera.rotation = _args['saturation']
+                if 'sharpness' in _args:
+                    camera.sharpness = _args['sharpness']
+                if 'shutter_speed' in _args:
+                    camera.shutter_speed = _args['shutter_speed']
+                if 'vflip' in _args:
+                    camera.vflip = _args['vflip']
 
 
             except picamera.exc.PiCameraValueError as e:
@@ -61,7 +96,17 @@ def TakeImage(_args):
 
             #Capture frame
             try:
-                camera.capture(stream, format=_args['format'])
+                format = _args.get('format', 'jpeg')
+                resize = _args.get('resize', None)
+
+                options = dict()
+                if format == 'jpeg':
+                    options['quality'] = _args.get('quality', 85)
+                    options['thumbnail'] = _args.get('thumbnail', None)
+
+                camera.capture(stream, format=format, use_video_port=False,
+                               resize=resize, **options)
+
             except picamera.exc.PiCameraValueError as e:
                 raise TwistedPiValueError('Bad Camera Argument',
                                           ErrorCodes.INVALID_CAMERA_ARGUMENT)
