@@ -58,8 +58,8 @@ class ServiceMaker(object):
     options = Options
 
     def makeService(self, _config):
-        observer = log.PythonLoggingObserver()
-        observer.start()
+        #observer = log.PythonLoggingObserver()
+        #observer.start()
 
 
         factory = Server.ImageServerFactory(_config)

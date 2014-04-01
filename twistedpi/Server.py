@@ -61,7 +61,7 @@ def DecodeRequest(_request):
         raise
 
 def EncodeResult(_result):
-    log.msg('Encoding Result: {0}'.format(_result))
+    #log.msg('Encoding Result: {0}'.format(_result))
 
     try:
         return json.dumps(_result)
@@ -71,7 +71,7 @@ def EncodeResult(_result):
 
 
 def ValidateRequest(_request):
-    lo.msg('Validating Request')
+    log.msg('Validating Request')
 
     if not 'command' in _request or not isinstance (_request['command'], types.StringTypes):
         raise TwistedPiValueError('Missing command', ErrorCodes.BAD_REQUEST)
@@ -131,8 +131,7 @@ class JSONCommandProtocol(NetstringReceiver):
         function = getattr(self, 'handle_{0}'.format(command), None)
 
         if callable(function):
-            d = maybeDeferred(function, _request['args'])
-            return d
+            return  maybeDeferred(function, _request['args'])
         else:
             log.msg('No command found')
             msg = 'Invalid command {0}'.format(command)
@@ -140,7 +139,7 @@ class JSONCommandProtocol(NetstringReceiver):
 
     def _sendResponse(self, _response):
         log.msg('Sending Response. Size {0}'.format(len(_response)))
-        log.msg('<--- {0}'.format(_response), logLevel=VERBOSE)
+        #log.msg('<--- {0}'.format(_response), logLevel=VERBOSE)
         self.sendString(_response)
 
     def _finalizeRequest(self, _result):
