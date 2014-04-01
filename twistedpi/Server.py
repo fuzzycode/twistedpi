@@ -49,7 +49,7 @@ VERBOSE = 5
 
 
 def DecodeRequest(_request):
-    __logger.debug('Decoding request')
+    log.msg('Decoding request')
 
     try:
         return json.loads(_request)
@@ -61,7 +61,7 @@ def DecodeRequest(_request):
         raise
 
 def EncodeResult(_result):
-    __logger.log(VERBOSE, 'Encoding Result: {0}'.format(_result))
+    log.msg('Encoding Result: {0}'.format(_result))
 
     try:
         return json.dumps(_result)
@@ -71,7 +71,7 @@ def EncodeResult(_result):
 
 
 def ValidateRequest(_request):
-    __logger.debug('Validating Request')
+    lo.msg('Validating Request')
 
     if not 'command' in _request or not isinstance (_request['command'], types.StringTypes):
         raise TwistedPiValueError('Missing command', ErrorCodes.BAD_REQUEST)
@@ -80,7 +80,7 @@ def ValidateRequest(_request):
 
 
 def PrepareRequest(_request):
-    __logger.debug('Preparing Request {0}'.format(_request))
+    log.msg('Preparing Request {0}'.format(_request))
 
     try:
         _request['command'] = _request['command'].upper()
@@ -113,10 +113,8 @@ def ResponseFail(_fail, **kwargs):
 
 
 def EncodeData(_data):
-    __logger.debug('Encoding Data')
-
     _data = base64.b64encode(_data)
-    __logger.debug('Encoded Length: {0}'.format(len(_data)))
+    log.msg('Encoded Length: {0}'.format(len(_data)))
 
     return _data
 
@@ -235,8 +233,7 @@ class ImageServerFactory(Factory):
         log.msg('Stopping Protocol Factory', logLevel=logging.DEBUG)
 
 
-#observer = log.PythonLoggingObserver()
-#observer.start()
+
 
 #ch = logging.StreamHandler(sys.stdout)
 #ch.setLevel(logging.DEBUG)

@@ -25,14 +25,30 @@ from twisted.python import usage
 from twisted.application.service import IServiceMaker
 from twisted.plugin import IPlugin
 from twisted.application import internet
+from twisted.python import log
 
+
+#std modules
+import logging
+
+#twistedpi modules
 from twistedpi import Server
+
+__logger = logging.getLogger(__name__)
 
 
 class Options(usage.Options):
     optParameters = [
         ["port", "p", 8090, "Server port number"]]
 
+
+    def opt_Version(self):
+        """
+        Display twistedpi version and exit.
+        """
+        from twistedpi import __VERSION__
+        print("twistedpi version: {0}.{1}.{2}".format(*__VERSION__))
+        raise SystemExit(0)
 
 class ServiceMaker(object):
     implements(IServiceMaker, IPlugin)
@@ -42,6 +58,10 @@ class ServiceMaker(object):
     options = Options
 
     def makeService(self, _config):
+        observer = log.PythonLoggingObserver()
+        observer.start()
+
+
         factory = Server.ImageServerFactory(_config)
         return internet.TCPServer(int(_config["port"]), factory)
 
