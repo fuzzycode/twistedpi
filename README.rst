@@ -1,8 +1,15 @@
-Twistedpi - A networked remote control for your Raspberry Pi camera module
+Twistedpi
 =========
 
 Dependencies
 ------------
+*twistedpi* depends on the following packages:
+
+* twisted_
+* picamera_
+
+In addition to these packages, *twistedpi* has to be installed on a Raspberry
+Pi with a functional camera board attached.
 
 Installation
 ------------
@@ -32,3 +39,7 @@ GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see `<http://www.gnu.org/licenses/>`_.
+
+
+.. _twisted: https://twistedmatrix.com/trac/
+.. _picamera: http://picamera.readthedocs.org/en/latest/
