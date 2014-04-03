@@ -17,24 +17,76 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with twistedpi.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+A Twisted plugin to allow remote control of the Raspberry Pi
+camera module.
+"""
+
 from twistedpi import __VERSION__, __NAME__
+
+
+try:
+    import twisted
+    import picamera
+except ImportError:
+    raise SystemExit('Required packages not found')
+
+
+
 
 __author__ 'Björn Larsson'
 __author_mail__ = 'develop@bjornlarsson.net'
-__url__ = ''
+__url__ = 'https://github.com/fuzzycode/twistedpi'
+
 __platforms__ = []
 
-__keywords__ = []
+__keywords__ = [
+    'raspberrypi',
+    'camera',
+    'twisted',
+    'remotecontrol'
+]
 
-__classifiers__ = []
+__classifiers__ = [
+    Development Status :: 2 - Pre-Alpha,
+    'Environment :: Console',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: GNU Library or Lesser General Public License
+    (LGPL)',
+    Programming Language :: Python
+    'Topic :: Multimedia :: Graphics :: Capture :: Digital Camera',
+    'Topic :: System :: Networking'
+]
 
 __requires__= []
 
 __packages__ = []
 
+__entry_points__ = {}
+
+def get_description():
+    try:
+        return open("README.rst").read() + '\n' + open("CHANGES.txt").read()
+    except Exception:
+        return "No description"
+
 setup(
+    name = __NAME__,
+    version = '.'.join(__VERSION__),
+    description = __doc__,
+    long_description = get_description(),
 
+    license='LGPLv3',
+    keywords             = ' '.join(__keywords__),
+    packages             = find_packages(),
 
+    classifiers = __classifiers__,
+    author = __author__,
+    author_email = __author__email,
+    platforms = __platforms__,
+
+    install_requires = __requires__,
+    entry_points = __entry_points__,
 )
 
 
