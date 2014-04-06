@@ -62,6 +62,7 @@ def DecodeRequest(_request):
         log.err(_e)
         raise
 
+
 def EncodeResult(_result):
     #log.msg('Encoding Result: {0}'.format(_result))
 
@@ -95,11 +96,13 @@ def PrepareRequest(_request):
 
     return _request
 
+
 def ResponseSuccess(_result, **kwargs):
     response = dict([('command', kwargs['command'])])
     response['payload'] = _result
 
     return response
+
 
 def ResponseFail(_fail, **kwargs):
     _fail.trap(TwistedPiException)
@@ -110,7 +113,6 @@ def ResponseFail(_fail, **kwargs):
     _error = _fail.value
     response['error']['code'] = _error.code
 
-
     return response
 
 
@@ -120,23 +122,27 @@ def EncodeData(_data):
 
     return _data
 
+
 def LogServerFailure(_failure):
     log.err(_failure)
 
 
 class JSONCommandProtocol(NetstringReceiver):
-    def __init__(self):
-        pass
+    def __init__(self, _factory):
+        self.factory = _factory
 
     def connectionMade(self):
         log.msg('Connection opened')
+        self.factory.connectionMade()
 
+        #Send server information to client
         d = succeed(dict([('version', __VERSION__), ('name', __NAME__)]))
         d.addCallbacks(self._finalizeRequest, LogServerFailure)
-
+        return d
 
     def connectionLost(self, _reason):
         log.msg('Connection lost: {0}'.format(_reason))
+        self.factory.connectionLost()
 
     def _handleCommand(self, _request):
         command = _request['command']
@@ -237,12 +243,16 @@ class ImageServerFactory(Factory):
         log.msg('Creating Protocol for {0}'.format(_addr),
                 logLevel=logging.DEBUG)
 
-
-        return CameraProtocol()
+        return CameraProtocol(self)
 
     def stopFactory(self):
         log.msg('Stopping Protocol Factory', logLevel=logging.DEBUG)
 
+    def connectionMade(self):
+        pass
+
+    def connectionLost(self):
+        pass
 
 
 

@@ -41,7 +41,7 @@ __url__ = 'https://github.com/fuzzycode/twistedpi'
 __platforms__ = []
 
 __keywords__ = [
-    'raspberrypi',
+    'raspberry pi',
     'camera',
     'twisted',
     'remotecontrol'
