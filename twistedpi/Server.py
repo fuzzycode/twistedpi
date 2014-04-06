@@ -42,6 +42,8 @@ import Camera
 #twistedpi modules
 from errors import (ErrorCodes, TwistedPiException, TwistedPiMethodNotFound,
                     TwistedPiValueError)
+from twistedpi import __VERSION__, __NAME__
+
 
 __logger = logging.getLogger(__name__)
 
@@ -125,6 +127,16 @@ def LogServerFailure(_failure):
 class JSONCommandProtocol(NetstringReceiver):
     def __init__(self):
         pass
+
+    def connectionMade(self):
+        log.msg('Connection opened')
+
+        d = succeed(dict([('version', __VERSION__), ('name', __NAME__)]))
+        d.addCallbacks(self._finalizeRequest, LogServerFailure)
+
+
+    def connectionLost(self, _reason):
+        log.msg('Connection lost: {0}'.format(_reason))
 
     def _handleCommand(self, _request):
         command = _request['command']
