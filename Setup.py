@@ -21,6 +21,7 @@
 A Twisted plugin to allow remote control of the Raspberry Pi
 camera module.
 """
+from setuptools import setup, find_packages
 
 from twistedpi import __VERSION__, __NAME__
 
@@ -34,7 +35,7 @@ except ImportError:
 
 
 
-__author__ 'Björn Larsson'
+__author__ = 'Björn Larsson'
 __author_mail__ = 'develop@bjornlarsson.net'
 __url__ = 'https://github.com/fuzzycode/twistedpi'
 
@@ -48,14 +49,13 @@ __keywords__ = [
 ]
 
 __classifiers__ = [
-    Development Status :: 2 - Pre-Alpha,
+    'Development Status :: 2 - Pre-Alpha',
     'Environment :: Console',
     'Intended Audience :: Developers',
-    'License :: OSI Approved :: GNU Library or Lesser General Public License
-    (LGPL)',
-    Programming Language :: Python
+    'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
+    'Programming Language :: Python',
     'Topic :: Multimedia :: Graphics :: Capture :: Digital Camera',
-    'Topic :: System :: Networking'
+    'Topic :: System :: Networking',
 ]
 
 __requires__= []
@@ -72,8 +72,12 @@ def get_description():
 
 setup(
     name = __NAME__,
-    version = '.'.join(__VERSION__),
+    author = __author__,
+    author_email = __author_mail__,
+    version = '.'.join([ str(s) for s in __VERSION__]),
     description = __doc__,
+    url = __url__,
+
     long_description = get_description(),
 
     license='LGPLv3',
@@ -81,10 +85,7 @@ setup(
     packages             = find_packages(),
 
     classifiers = __classifiers__,
-    author = __author__,
-    author_email = __author__email,
     platforms = __platforms__,
-
     install_requires = __requires__,
     entry_points = __entry_points__,
 )
