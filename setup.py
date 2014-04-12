@@ -58,7 +58,10 @@ __classifiers__ = [
     'Topic :: System :: Networking',
 ]
 
-__requires__= []
+__requires__= [
+    'twisted',
+    'picamera'
+]
 
 __packages__ = []
 
