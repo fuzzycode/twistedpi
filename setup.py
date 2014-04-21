@@ -32,9 +32,6 @@ try:
 except ImportError:
     raise SystemExit('Required packages not found')
 
-
-
-
 __author__ = 'Björn Larsson'
 __author_mail__ = 'develop@bjornlarsson.net'
 __url__ = 'https://github.com/fuzzycode/twistedpi'
@@ -45,7 +42,7 @@ __keywords__ = [
     'raspberry pi',
     'camera',
     'twisted',
-    'remotecontrol'
+    'remote control'
 ]
 
 __classifiers__ = [
@@ -58,7 +55,7 @@ __classifiers__ = [
     'Topic :: System :: Networking',
 ]
 
-__requires__= [
+__requires__ = [
     'twisted',
     'picamera'
 ]
@@ -67,30 +64,32 @@ __packages__ = []
 
 __entry_points__ = {}
 
+
 def get_description():
     try:
         return open("README.rst").read() + '\n' + open("CHANGES.txt").read()
     except Exception:
         return "No description"
 
-setup(
-    name = __NAME__,
-    author = __author__,
-    author_email = __author_mail__,
-    version = '.'.join([ str(s) for s in __VERSION__]),
-    description = __doc__,
-    url = __url__,
 
-    long_description = get_description(),
+setup(
+    name=__NAME__,
+    author=__author__,
+    author_email=__author_mail__,
+    version='.'.join([str(s) for s in __VERSION__]),
+    description=__doc__,
+    url=__url__,
+
+    long_description=get_description(),
 
     license='LGPLv3',
-    keywords             = ' '.join(__keywords__),
-    packages             = find_packages(),
+    keywords=' '.join(__keywords__),
+    packages=find_packages(),
 
-    classifiers = __classifiers__,
-    platforms = __platforms__,
-    install_requires = __requires__,
-    entry_points = __entry_points__,
+    classifiers=__classifiers__,
+    platforms=__platforms__,
+    install_requires=__requires__,
+    entry_points=__entry_points__,
 )
 
 
