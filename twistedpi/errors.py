@@ -17,9 +17,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with twistedpi.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Error module
+"""
+
 from twisted.python import log
 
-class ErrorCodes:
+
+class ErrorCodes(object):
     BAD_REQUEST = 1
     INVALID_COMMAND = 2
     BAD_DATA = 3

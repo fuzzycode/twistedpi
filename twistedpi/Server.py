@@ -17,21 +17,19 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with twistedpi.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Server module
+"""
+
+
 #Twisted modules
 from twisted.internet.protocol import Factory
-from twisted.internet import reactor, threads
+from twisted.internet import threads
 from twisted.python import log
-from twisted.internet import task
 from twisted.protocols.basic import NetstringReceiver
-from twisted.internet.defer import succeed, maybeDeferred, Deferred
-from twisted.python.failure import Failure
+from twisted.internet.defer import succeed, maybeDeferred
 
-import sys
-import io
 import json
-import threading
-import struct
-import time
 import base64
 import logging
 import types
@@ -51,6 +49,11 @@ VERBOSE = 5
 
 
 def DecodeRequest(_request):
+    """
+
+    :param _request:
+    :return: :raise TwistedPiValueError:
+    """
     log.msg('Decoding request')
 
     try:
@@ -64,8 +67,11 @@ def DecodeRequest(_request):
 
 
 def EncodeResult(_result):
-    #log.msg('Encoding Result: {0}'.format(_result))
+    """
 
+    :param _result:
+    :return: :raise TwistedPiValueError:
+    """
     try:
         return json.dumps(_result)
     except ValueError as _e:
@@ -74,6 +80,11 @@ def EncodeResult(_result):
 
 
 def ValidateRequest(_request):
+    """
+
+    :param _request:
+    :return: :raise TwistedPiValueError:
+    """
     log.msg('Validating Request')
 
     if not 'command' in _request or not isinstance (_request['command'], types.StringTypes):
@@ -83,6 +94,11 @@ def ValidateRequest(_request):
 
 
 def PrepareRequest(_request):
+    """
+
+    :param _request:
+    :return: :raise:
+    """
     log.msg('Preparing Request {0}'.format(_request))
 
     try:
@@ -98,6 +114,12 @@ def PrepareRequest(_request):
 
 
 def ResponseSuccess(_result, **kwargs):
+    """
+
+    :param _result:
+    :param kwargs:
+    :return:
+    """
     response = dict([('command', kwargs['command'])])
     response['payload'] = _result
 
@@ -105,6 +127,12 @@ def ResponseSuccess(_result, **kwargs):
 
 
 def ResponseFail(_fail, **kwargs):
+    """
+
+    :param _fail:
+    :param kwargs:
+    :return:
+    """
     _fail.trap(TwistedPiException)
 
     response = dict([('command', kwargs['command'])])
@@ -117,6 +145,11 @@ def ResponseFail(_fail, **kwargs):
 
 
 def EncodeData(_data):
+    """
+
+    :param _data:
+    :return:
+    """
     _data = base64.b64encode(_data)
     log.msg('Encoded Length: {0}'.format(len(_data)))
 
@@ -124,14 +157,27 @@ def EncodeData(_data):
 
 
 def LogServerFailure(_failure):
+    """
+
+    :param _failure:
+    """
     log.err(_failure)
 
 
 class JSONCommandProtocol(NetstringReceiver):
+    """
+
+    :param _factory:
+    """
+
     def __init__(self, _factory):
         self.factory = _factory
 
     def connectionMade(self):
+        """
+
+        :return:
+        """
         log.msg('Connection opened')
         self.factory.connectionMade()
 
@@ -141,6 +187,10 @@ class JSONCommandProtocol(NetstringReceiver):
         return d
 
     def connectionLost(self, _reason):
+        """
+
+        :param _reason:
+        """
         log.msg('Connection lost: {0}'.format(_reason))
         self.factory.connectionLost()
 
@@ -190,11 +240,21 @@ class JSONCommandProtocol(NetstringReceiver):
 
 
 class CameraProtocol(JSONCommandProtocol):
-    def handle_PING(selg, _args):
+    def handle_PING(self, _args):
+        """
+
+        :param _args:
+        :return:
+        """
         log.msg('handle_PING', logLevel=logging.DEBUG)
         return 'PONG'
 
     def handle_IMAGE(self, _args):
+        """
+
+        :param _args:
+        :return: :raise TwistedPiException:
+        """
         log.msg('handle_image', logLevel=logging.DEBUG)
 
         def imageSuccess(_image):
@@ -211,11 +271,9 @@ class CameraProtocol(JSONCommandProtocol):
             raise TwistedPiException("Error capturing Image",
                                      ErrorCodes.SERVER_ERROR)
 
+        _args = Camera.validate_image_args(_args)
 
-
-        _args = Camera.ValidateImageArgs(_args)
-
-        d = threads.deferToThread(Camera.TakeImage, _args)
+        d = threads.deferToThread(Camera.take_image, _args)
         d.addCallbacks(imageSuccess, imageError)
 
         return d
@@ -226,44 +284,59 @@ class ImageServerFactory(Factory):
         log.msg('Creating Protocol Factory', logLevel=logging.DEBUG)
 
     def doStart(self):
+        """
+        TODO
+        """
         log.msg('Factory.doStart...', logLevel=logging.DEBUG)
 
     def doStop(self):
+        """
+        TODO
+        """
         log.msg('Factory.doStop...', logLevel=logging.DEBUG)
 
     def startConnecting(self, _connectorInstance):
+        """
+
+        :param _connectorInstance:
+        """
         log.msg('Start Connecting: {0}'.format(_connectorInstance),
                 logLevel=logger.DEBUG)
 
     def clientConnectionLost(self, _connection, _reason):
+        """
+
+        :param _connection:
+        :param _reason:
+        """
         log.msg('{0} connection lost {1}'.format(_connection, _reason))
 
 
     def buildProtocol(self, _addr):
+        """
+
+        :param _addr:
+        :return:
+        """
         log.msg('Creating Protocol for {0}'.format(_addr),
                 logLevel=logging.DEBUG)
 
         return CameraProtocol(self)
 
     def stopFactory(self):
+        """
+        TODO
+        """
         log.msg('Stopping Protocol Factory', logLevel=logging.DEBUG)
 
     def connectionMade(self):
+        """
+        TODO
+        """
         pass
 
     def connectionLost(self):
+        """
+        TODO
+        """
         pass
-
-
-
-#ch = logging.StreamHandler(sys.stdout)
-#ch.setLevel(logging.DEBUG)
-
-#formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-#ch.setFormatter(formatter)
-
-#logging.getLogger().addHandler(ch)
-#logging.getLogger().setLevel(logging.DEBUG)
-
-#reactor.listenTCP(8081, ImageServerFactory())
-#reactor.run()

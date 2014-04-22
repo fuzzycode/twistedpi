@@ -17,6 +17,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with twistedpi.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Twisted plugin module
+"""
+
 #Zope modules
 from zope.interface import implements
 
@@ -51,6 +55,9 @@ class Options(usage.Options):
         raise SystemExit(0)
 
 class ServiceMaker(object):
+    """
+    TODO: Add documentation
+    """
     implements(IServiceMaker, IPlugin)
 
     tapname = "twistedpi"
@@ -58,10 +65,11 @@ class ServiceMaker(object):
     options = Options
 
     def makeService(self, _config):
-        #observer = log.PythonLoggingObserver()
-        #observer.start()
+        """
 
-
+        :param _config:
+        :return:
+        """
         factory = Server.ImageServerFactory(_config)
         return internet.TCPServer(int(_config["port"]), factory)
 

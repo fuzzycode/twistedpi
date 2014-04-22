@@ -16,8 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with twistedpi.  If not, see <http://www.gnu.org/licenses/>.
-from twisted.python import log
 
+"""
+Camera module
+"""
+
+from twisted.python import log
 
 import threading
 import logging
@@ -25,21 +29,32 @@ import io
 
 import picamera
 
-from errors import ErrorCodes, TwistedPiValueError
+from errors import ErrorCodes, TwistedPiValueError, TwistedPiException
 
 
 __lock = threading.Lock()
 __log = logging.getLogger(__name__)
 
 
-def ValidateImageArgs(_args):
+def validate_image_args(_args):
+    """
+
+    :param _args:
+    :return:
+    """
     if not 'format' in _args:
-        _args['format'] = 'jpeg' #Default to jpeg if format is missing
+        _args['format'] = 'jpeg'  # Default to jpeg if format is missing
 
     return _args
 
 
-def TakeImage(_args):
+def take_image(_args):
+    """
+
+    :param _args:
+    :return:
+    :raise TwistedPiException:
+    """
     with __lock:
         with picamera.PiCamera() as camera:
             stream = io.BytesIO()
@@ -62,12 +77,12 @@ def TakeImage(_args):
                 if 'crop' in _args:
                     camera.crop = _args['crop']
                 if 'exif_tags' in _args:
-                    for k, v in _args[exif_tags]:
+                    for k, v in _args['exif_tags']:
                         camera.exif_tags[k] = v
                 if 'exposure_compensation' in _args:
                     camera.exposure_compensation = _args['exposure_compensation']
                 if 'exposure_mode' in _args:
-                    camera.exposure_mode = _args[exposure_mode]
+                    camera.exposure_mode = _args['exposure_mode']
                 if 'hflip' in _args:
                     camera.hflip = _args['hflip']
                 if 'led' in _args:
@@ -85,8 +100,7 @@ def TakeImage(_args):
                 if 'vflip' in _args:
                     camera.vflip = _args['vflip']
 
-
-            except picamera.exc.PiCameraValueError as e:
+            except picamera.PiCameraValueError as e:
                 raise TwistedPiValueError('Invalid Camera Arguments',
                                           ErrorCodes.INVALID_CAMERA_ARGUMENT)
 
@@ -107,7 +121,7 @@ def TakeImage(_args):
                 camera.capture(stream, format=format, use_video_port=False,
                                resize=resize, **options)
 
-            except picamera.exc.PiCameraValueError as e:
+            except picamera.PiCameraValueError as e:
                 raise TwistedPiValueError('Bad Camera Argument',
                                           ErrorCodes.INVALID_CAMERA_ARGUMENT)
             except:
