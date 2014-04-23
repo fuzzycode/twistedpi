@@ -38,9 +38,10 @@ __log = logging.getLogger(__name__)
 
 def validate_image_args(_args):
     """
+    Validate the camera arguments. Ensures that a camera format is provided.
 
     :param _args:
-    :return:
+    :return: A dictionary of validated arguments
     """
     if not 'format' in _args:
         _args['format'] = 'jpeg'  # Default to jpeg if format is missing
@@ -50,6 +51,7 @@ def validate_image_args(_args):
 
 def take_image(_args):
     """
+    Capture an image using the provided arguments.
 
     :param _args:
     :return:
@@ -104,10 +106,6 @@ def take_image(_args):
                 raise TwistedPiValueError('Invalid Camera Arguments',
                                           ErrorCodes.INVALID_CAMERA_ARGUMENT)
 
-            except:
-                raise TwistedPiValueError('Invalid Camera Arguments',
-                                          ErrorCodes.INVALID_CAMERA_ARGUMENT)
-
             #Capture frame
             try:
                 format = _args.get('format', 'jpeg')
@@ -124,8 +122,33 @@ def take_image(_args):
             except picamera.PiCameraValueError as e:
                 raise TwistedPiValueError('Bad Camera Argument',
                                           ErrorCodes.INVALID_CAMERA_ARGUMENT)
-            except:
-                raise TwistedPiException('Error Capturing Image',
-                                         ErrorCodes.SERVER_ERROR)
             else:
+                #Save all camera settings
+                settings = dict([
+                    ('resolution', camera.resolution),
+                    ('ISO', camera.ISO),
+                    ('awb_mode', camera.awb_mode),
+                    ('brightness', camera.brightness),
+                    ('color_effects', camera.color_effects),
+                    ('contrast', camera.contrast),
+                    ('crop', camera.crop),
+                    ('exif_tags', camera.exif_tags),
+                    ('exposure_compensation', camera.exposure_compensation),
+                    ('exposure_mode', camera.exposure_mode),
+                    ('hflip', camera.hflip),
+                    ('led', camera.led),
+                    ('meter_mode', camera.meter_mode),
+                    ('rotation', camera.rotation),
+                    ('saturation', camera.saturation),
+                    ('sharpness', camera.sharpness),
+                    ('shutter_speed', camera.shutter_speed),
+                    ('vflip', camera.vflip)])
+
+                settings['format'] = format
+                settings['resize'] = resize
+
+                if format == 'jpeg':
+                    settings['quality'] = options['quality']
+                    settings['thumbnail'] = options['thumbnail']
+
                 return stream

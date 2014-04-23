@@ -66,11 +66,14 @@ __entry_points__ = {}
 
 
 def get_description():
-    try:
-        return open("README.rst").read() + '\n' + open("CHANGES.txt").read()
-    except Exception:
-        return "No description"
+    """
+    Generate the project long description by combining the readme file and the changes file.
 
+    :return: The description string
+    """
+    with open("README.rst") as rm:
+        with open("CHANGES.txt") as ch:
+            return rm.read() + '\n' + ch.read()
 
 setup(
     name=__NAME__,
